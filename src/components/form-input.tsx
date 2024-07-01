@@ -43,7 +43,7 @@ export function FormInput() {
         ],
       },
       {
-        apiKey: process.env.OPENAI_KEY,
+        apiKey: process.env.OPENAI_API_KEY,
       }
     );
 
