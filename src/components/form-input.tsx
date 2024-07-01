@@ -24,7 +24,7 @@ export function FormInput() {
   const [solution, setSolution] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const hitEndpoint = async (name: string) => {
+  const hitEndpoint = async (solution: string) => {
     setResponse("");
     setIsLoading(true);
     const stream = await OpenAI(
