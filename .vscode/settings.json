@@ -1,0 +1,17 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "files.autoSave": "afterDelay",
+  "i18n-ally.localesPaths": ["./messages"], // E.g. "./messages"
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.extract.autoDetect": true,
+  "i18n-ally.extract.ignoredByFiles": {
+    "src/components/page/homepage/hot-offers.tsx": [
+      "CLBK Cashback Lagi Buat Kamu"
+    ]
+  },
+  "i18n-ally.sourceLanguage": "id"
+}
