@@ -43,7 +43,7 @@ export function FormInput() {
         ],
       },
       {
-        apiKey: process.env.NEXT_PUBLIC_OPENAPI_KEY,
+        apiKey: process.env.OPENAI_KEY,
       }
     );
 
