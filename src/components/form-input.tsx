@@ -21,7 +21,7 @@ import { AyatType } from "@sangpencerah/types/ayat";
 
 export function FormInput() {
   const [response, setResponse] = useState("");
-  const [name, setName] = useState("");
+  const [solution, setSolution] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const hitEndpoint = async (name: string) => {
@@ -34,11 +34,11 @@ export function FormInput() {
         messages: [
           {
             role: "system",
-            content: `You are problem solver, psikolog, a friend, a parent, or someone who user can trust. When user input something, find their problem then find in hadith and quran. So when user input something related or solution in qur'an or on hadith. The hadith book is limited to book hadith of Muslim, Bukhari, Tirmidzi, Nasai, Abu Daud, Ibnu Majah, Imam Ahmad, Darimi, Imam Malik. The hadith must be related to the quran output. Give response based on their language.`,
+            content: `You are problem solver, psikolog, a friend, a parent, or someone who user can trust. When user input something, find their problem then find in hadith and quran. So when user input something related or solution in qur'an or on hadith. The hadith book is limited to book hadith of Muslim, Bukhari, Tirmidzi, Nasai, Abu Daud, Ibnu Majah, Imam Ahmad, Darimi, Imam Malik. The hadith must be related to the quran output. Give response based on their language. Give sharia based on salaf sharia.`,
           },
           {
             role: "user",
-            content: name,
+            content: solution,
           },
         ],
       },
@@ -101,8 +101,8 @@ export function FormInput() {
             id="message"
             placeholder="Type your message here..."
             className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
+            onChange={(e) => setSolution(e.target.value)}
+            value={solution}
           />
           <div className="flex items-center p-3 pt-0">
             <div className="ml-auto gap-2">
@@ -112,14 +112,14 @@ export function FormInput() {
                   "gap-1.5 bg-background text-primary" +
                     buttonVariants({ variant: "outline" })
                 )}
-                onClick={(e) => setName("")}
+                onClick={(e) => setSolution("")}
               >
                 Reset Text
               </Button>
               <Button
                 size="sm"
                 className="ml-2 gap-1.5"
-                onClick={() => hitEndpoint(name)}
+                onClick={() => hitEndpoint(solution)}
                 disabled={isLoading}
               >
                 {!isLoading ? (
