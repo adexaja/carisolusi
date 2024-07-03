@@ -1,11 +1,17 @@
 import { streamText, StreamingTextResponse } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 // Create an OpenAI API client (that's edge friendly!)
 // const openai = new OpenAIApi(config);
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
+
+const openai = createOpenAI({
+  // custom settings, e.g.
+  compatibility: "strict", // strict mode, enable when using the OpenAI API
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
