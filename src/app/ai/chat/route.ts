@@ -26,9 +26,27 @@ export async function POST(req: Request, resp: any) {
       prompt: messages,
       system: `You are problem solver, psikolog, a friend, a parent, or someone who user can trust. When user input something, find their problem then find in hadith and quran. So when user input something related or solution in qur'an or on hadith. The hadith book is limited to book hadith of Muslim, Bukhari, Tirmidzi, Nasai, Abu Daud, Ibnu Majah, Imam Ahmad, Darimi, Imam Malik. The hadith must be related to the quran output. Give response based on their language. Give sharia based on salaf sharia. `,
     });
+
     // Convert the response into a friendly text-stream
-    // Respond with the stream
-    return new StreamingTextResponse(textStream);
+    const reader = textStream.getReader();
+    const encoder = new TextEncoder();
+
+    const encodedStream = new ReadableStream({
+      async start(controller) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            controller.close();
+            break;
+          }
+          const encoded = encoder.encode(value);
+          controller.enqueue(encoded);
+        }
+      },
+    });
+
+    // Respond with the encoded stream
+    return new StreamingTextResponse(encodedStream);
   } catch (e) {
     console.error(e);
     return resp.send(400).send(e);
