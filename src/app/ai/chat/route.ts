@@ -6,6 +6,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
+export const dynamic = "force-dynamic"; // static by default, unless reading the request
 
 const openai = createOpenAI({
   // custom settings, e.g.
