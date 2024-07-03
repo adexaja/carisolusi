@@ -6,18 +6,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@sangpencerah/components/ui/card";
-import { Input } from "@sangpencerah/components/ui/input";
-import { Label } from "@sangpencerah/components/ui/label";
 import { Textarea } from "@sangpencerah/components/ui/textarea";
 import { CornerDownLeft, LoaderIcon, Terminal } from "lucide-react";
-import { OpenAI } from "openai-streams";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { cn } from "@sangpencerah/lib/utils";
-import { AyatType } from "@sangpencerah/types/ayat";
 
 export function FormInput() {
   const [response, setResponse] = useState("");
@@ -25,65 +20,39 @@ export function FormInput() {
   const [isLoading, setIsLoading] = useState(false);
 
   const hitEndpoint = async (solution: string) => {
-    setResponse("");
     setIsLoading(true);
-    const stream = await OpenAI(
-      "chat",
-      {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `You are problem solver, psikolog, a friend, a parent, or someone who user can trust. When user input something, find their problem then find in hadith and quran. So when user input something related or solution in qur'an or on hadith. The hadith book is limited to book hadith of Muslim, Bukhari, Tirmidzi, Nasai, Abu Daud, Ibnu Majah, Imam Ahmad, Darimi, Imam Malik. The hadith must be related to the quran output. Give response based on their language. Give sharia based on salaf sharia. `,
-          },
-          {
-            role: "user",
-            content: solution,
-          },
-        ],
-      },
-      {
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API,
-      }
-    );
 
-    const reader = stream.getReader();
+    const response: Response = await fetch("/ai/chat", {
+      method: "POST",
+
+      body: JSON.stringify({
+        messages: solution,
+      }),
+
+      next: { revalidate: 0 },
+    });
+
+    /// procees the stream
+    const reader = response
+      .body! // .pipeThrough(new TextDecoderStream())
+      .getReader();
+
+    /// procees the stream
     const decoder = new TextDecoder();
     let done = false;
     let solusi = "";
 
     while (!done) {
       const { value, done: readerDone } = await reader.read();
+      if (value) {
+        solusi += decoder.decode(value, { stream: true });
+      }
       done = readerDone;
-      const chunk = decoder.decode(value, { stream: true });
-      setResponse((prev) => prev + chunk);
+      setResponse(solusi);
     }
+
     // pengembangan berikut nya bisa menampilkan suara dan mendengarkan ayatnya
-    // try {
-    //   let solusiJson = JSON.parse(solusi);
-
-    //   const staticData = await fetch(
-    //     `https://equran.id/api/v2/surat/${solusiJson.quran.surah}`,
-    //     { cache: "force-cache" }
-    //   );
-    //   const staticDataJson = await staticData.json();
-
-    //   const quranAyah = staticDataJson.data.ayat.filter(
-    //     (ayah: AyatType) =>
-    //       ayah.nomorAyat >= solusiJson.quran.ayah &&
-    //       ayah.nomorAyat <= solusiJson.quran.toayah
-    //   );
-
-    //   let solusiAyat = "";
-    //   quranAyah.forEach((ayah: AyatType) => {
-    //     solusiAyat +=
-    //       "Ayat No. " + ayah.nomorAyat + " : " + ayah.teksIndonesia + "\n";
-    //   });
-    //   setResponse(solusiAyat);
-    // } catch (e) {
-    //   console.error(e);
-    //   setResponse(solusi);
-    // }
+    // agar hati menjadi lebih tentram
 
     setIsLoading(false);
   };
