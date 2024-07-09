@@ -112,7 +112,7 @@ export function FormInput() {
           <Terminal className="h-4 w-4" />
           <AlertTitle>Apa ya kira kira solusinya?</AlertTitle>
           <AlertDescription>
-            {response && <>{response}</>}
+            {response && <div className="whitespace-pre-wrap">{response}</div>}
 
             {!response && "Masukkan sesuatu pada input di atas"}
           </AlertDescription>
